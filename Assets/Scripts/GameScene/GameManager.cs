@@ -1,7 +1,7 @@
 using System;
-using Unity.Engine;
+using UnityEngine;
 
-public class GameManager : MonoBehavior
+public class GameManager : MonoBehaviour
 {
     async void Start()
     {
