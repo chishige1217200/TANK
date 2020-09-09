@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Bullet
+public class Bullet: MonoBehaviour
 {
     void Start()
     {
@@ -10,6 +10,6 @@ public class Bullet
 
     void Update()
     {
-
+        this.transform.position += new Vector3(0, 0, 0.5f);
     }
 }
