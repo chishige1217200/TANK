@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
         float force_x; //x方向の力
         float force_z; //z方向の力
         float forceIndex = 15f; //射出力基準値 要初期化
-        float init_radian = 60f; //初期進行角度 要初期化
+        float init_radian = 30f; //初期進行角度 要初期化
 
         rb = GetComponent<Rigidbody>(); //Rigidbody情報の取得
         this.transform.rotation = Quaternion.Euler(0, -init_radian + 90f, 0); //回転処理（進行方向）
