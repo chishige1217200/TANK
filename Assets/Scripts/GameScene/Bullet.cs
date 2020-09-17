@@ -3,15 +3,17 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private float speed_x = 0; //x軸方向移動速度
-    private float speed_z = 0; //z軸方向移動速度
-    private float speedIndex = 0.05f; //速度基準値
+    private float speed_x = 0; //x軸方向移動速度 temporary value
+    private float speed_z = 0; //z軸方向移動速度 temporary value
+    private float speedIndex = 0.05f; //速度基準値 temporary value
     private float radian = 0f; //進行角度
     private int ricochet = 1; //跳弾可能回数
     private Rigidbody rb; //物理演算情報RigidBody
 
-    private float force_x = 10f; //x方向の力
-    private float force_z = 10f; //y方向の力
+    private float force_x = 10f; //x方向の力 temporary value
+    private float force_z = 10f; //y方向の力 temporary value
+
+    private float forceIndex = 15f; //射出力基準値 temporary value
 
     void Start()
     {
@@ -20,28 +22,31 @@ public class Bullet : MonoBehaviour
         //Movetest2(30f); //Movetest2を角度0で実行
     }
 
-    void Update()
+    void FixedUpdate() //物理的な挙動はFixedUpdate関数を使用
     {
+        Debug.Log(rb.velocity);
         //this.transform.position += new Vector3(speed_x, 0, speed_z); //移動処理
         //this.transform.rotation = Quaternion.Euler(0, radian, 0); //回転処理（進行方向）
     }
 
-    void OnTriggerEnter(Collider collider) //物体の衝突を見る関数（そのままだと貫通するよ）→Collisionに変更
+    void OnCollisionEnter(Collision collision) //物体の衝突を見る関数(非貫通)
     {
-        if (collider.tag == "Wall" || collider.tag == "WeakWall") //壁と衝突した場合
+        if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "WeakWall") //壁と衝突した場合
         {
-            if(ricochet == 0) //跳弾可能回数が0の場合，消滅
+            if (ricochet == 0) //跳弾可能回数が0の場合，消滅
             {
                 Destroy(this.gameObject);
                 Debug.Log("Broke!");
             }
-            else //それ以外の場合，反射と跳弾可能回数を1減らす
+            else //それ以外の場合，跳弾可能回数を1減らす
             {
-                //反射処理
                 ricochet--;
                 Debug.Log("Hit!");
             }
-
+        }
+        if (collision.gameObject.tag == "Tank" || collision.gameObject.tag == "Bullet" || collision.gameObject.tag == "Mine" || collision.gameObject.tag == "Blast") //タンク・他の弾・地雷・爆風との接触
+        {
+            Destroy(this.gameObject); //消滅
         }
     }
 
