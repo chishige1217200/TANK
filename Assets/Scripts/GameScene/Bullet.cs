@@ -8,19 +8,25 @@ public class Bullet : MonoBehaviour
     private float speedIndex = 0.05f; //速度基準値
     private float radian = 0f; //進行角度
     private int ricochet = 1; //跳弾可能回数
+    private Rigidbody rb; //物理演算情報RigidBody
 
-    async void Start()
+    private float force_x = 10f; //x方向の力
+    private float force_z = 10f; //y方向の力
+
+    void Start()
     {
-        Movetest2(30f); //Movetest2を角度0で実行
+        rb = GetComponent<Rigidbody>(); //Rigidbody情報の取得
+        rb.AddForce(force_x, 0, force_z, ForceMode.VelocityChange); //瞬間的に弾に力を加える
+        //Movetest2(30f); //Movetest2を角度0で実行
     }
 
     void Update()
     {
-        this.transform.position += new Vector3(speed_x, 0, speed_z); //移動処理
-        this.transform.rotation = Quaternion.Euler(0, radian, 0); //回転処理（進行方向）
+        //this.transform.position += new Vector3(speed_x, 0, speed_z); //移動処理
+        //this.transform.rotation = Quaternion.Euler(0, radian, 0); //回転処理（進行方向）
     }
 
-    void OnTriggerEnter(Collider collider) //物体の衝突を見る関数（そのままだと貫通するよ）
+    void OnTriggerEnter(Collider collider) //物体の衝突を見る関数（そのままだと貫通するよ）→Collisionに変更
     {
         if (collider.tag == "Wall" || collider.tag == "WeakWall") //壁と衝突した場合
         {
