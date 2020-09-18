@@ -3,64 +3,53 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private float speed_x = 0; //x軸方向移動速度
-    private float speed_z = 0; //z軸方向移動速度
-    private float speedIndex = 0.05f; //速度基準値
-    private float radian = 0f; //進行角度
-    private int ricochet = 1; //跳弾可能回数
+    private int ricochet = 10; //跳弾可能回数 要初期化
+    private Rigidbody rb; //物理演算情報RigidBody
 
-    async void Start()
+    void Start()
     {
-        Movetest2(30f); //Movetest2を角度0で実行
+        float force_x; //x方向の力
+        float force_z; //z方向の力
+        float forceIndex = 15f; //射出力基準値 要初期化
+        float init_radian = 30f; //初期進行角度 要初期化
+
+        rb = GetComponent<Rigidbody>(); //Rigidbody情報の取得
+        this.transform.rotation = Quaternion.Euler(0, -init_radian + 90f, 0); //回転処理（進行方向）
+        init_radian = init_radian * (float)(Math.PI / 180); //ラジアン(pi)に変換
+        force_x = forceIndex * (float)Math.Cos(init_radian); //x軸方向の力を計算
+        force_z = forceIndex * (float)Math.Sin(init_radian); //z軸方向の力を計算
+        rb.AddForce(force_x, 0, force_z, ForceMode.VelocityChange); //瞬間的に弾に力を加える(質量無視)
     }
 
-    void Update()
+    void OnCollisionEnter(Collision collision) //物体の衝突を見る関数(非貫通)
     {
-        this.transform.position += new Vector3(speed_x, 0, speed_z); //移動処理
-        this.transform.rotation = Quaternion.Euler(0, radian, 0); //回転処理（進行方向）
-    }
+        float speed_x; //x軸方向移動速度
+        float speed_z; //z軸方向移動速度
+        float radian; //反射後の角度を計算
 
-    void OnTriggerEnter(Collider collider) //物体の衝突を見る関数（そのままだと貫通するよ）
-    {
-        if (collider.tag == "Wall" || collider.tag == "WeakWall") //壁と衝突した場合
+        if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "WeakWall") //壁と衝突した場合
         {
-            if(ricochet == 0) //跳弾可能回数が0の場合，消滅
+            if (ricochet == 0) //跳弾可能回数が0のとき
             {
-                Destroy(this.gameObject);
+                Destroy(this.gameObject); //消滅
                 Debug.Log("Broke!");
+                //発射タンク情報へのアクセス
             }
-            else //それ以外の場合，反射と跳弾可能回数を1減らす
+            else //それ以外のとき
             {
-                //反射処理
-                ricochet--;
+                ricochet--; //跳弾可能回数を1減らす
                 Debug.Log("Hit!");
+                speed_x = rb.velocity.x; //x軸方向速度の取得
+                speed_z = rb.velocity.z; //z軸方向速度の取得
+                radian = (float)Math.Atan2(speed_z, speed_x); //x-z平面のtanの値計算
+                radian = radian * (float)(180 / Math.PI); //角度に変換
+                this.transform.rotation = Quaternion.Euler(0, -radian + 90f, 0); //回転処理（進行方向）
             }
-
         }
-    }
-
-    void Movetest() //始点と終点のx, z座標により制御
-    {
-        int x1 = 1; //temporary value
-        int x2 = 2; //temporary value
-        int z1 = 1; //temporary value
-        int z2 = 2; //temporary value
-
-        int dx = x2 - x1; //変化量x
-        int dz = z2 - z1; //変化量z
-
-        radian = (float)Math.Atan2(dz, dx); //tanの値計算
-        radian = radian * (float)(180 / Math.PI); //角度(ラジアン)の計算
-
-        speed_x = speedIndex * (float)Math.Cos(radian); //x軸方向速度
-        speed_z = speedIndex * (float)Math.Sin(radian); //z軸方向速度
-    }
-
-    void Movetest2(float angle) //角度の値により制御
-    {
-        radian = angle; //角度をradianに代入
-        angle = angle * (float)(Math.PI / 180); //ラジアンに変換
-        speed_x = speedIndex * (float)Math.Sin(angle); //x軸方向速度
-        speed_z = speedIndex * (float)Math.Cos(angle); //z軸方向速度
+        if (collision.gameObject.tag == "Tank" || collision.gameObject.tag == "Bullet" || collision.gameObject.tag == "Mine" || collision.gameObject.tag == "Blast") //タンク・他の弾・地雷・爆風との接触
+        {
+            Destroy(this.gameObject); //消滅
+            //発射タンク情報へのアクセス
+        }
     }
 }
