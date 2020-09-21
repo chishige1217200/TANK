@@ -3,9 +3,8 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private int ricochet = 0; //跳弾可能回数 要初期化
+    private int ricochet = 10; //跳弾可能回数 要初期化
     private Rigidbody rb; //物理演算情報RigidBody
-    private AudioSource[] audioSource; //効果音情報の取得 0:Fire 1:Hit
 
     void Start()
     {
@@ -17,12 +16,11 @@ public class Bullet : MonoBehaviour
 
         rend = new Renderer[5]; //配列の長さは5
         rb = GetComponent<Rigidbody>(); //Rigidbody情報の取得
-        audioSource = GetComponents<AudioSource>();
         rend[0] = GameObject.Find("BPS").GetComponent<Renderer>(); //Particle System情報の取得 通常弾エフェクト
         rend[1] = GameObject.Find("BPS2").GetComponent<Renderer>(); //高速弾エフェクト
         rend[2] = GameObject.Find("BPS3").GetComponent<Renderer>(); //反射弾エフェクト
-        rend[3] = GameObject.Find("Burst").GetComponent<Renderer>(); //
-        rend[4] = GameObject.Find("RPS").GetComponent<Renderer>(); //反射時エフェクト
+        rend[3] = GameObject.Find("RPS").GetComponent<Renderer>(); //反射時エフェクト
+        //rend[4] = GameObject.Find("Burst").GetComponent<Renderer>(); //未定
 
         this.transform.rotation = Quaternion.Euler(0, -init_radian + 90f, 0); //回転処理（進行方向）
         init_radian = init_radian * (float)(Math.PI / 180); //ラジアン(pi)に変換
@@ -62,7 +60,7 @@ public class Bullet : MonoBehaviour
             else //それ以外のとき
             {
                 ricochet--; //跳弾可能回数を1減らす
-                //反射音
+                //SoundEffect(1); //外部スクリプトによる命令に変更(消滅すると鳴らせない)
                 Debug.Log("Wall!");
                 speed_x = rb.velocity.x; //x軸方向速度の取得
                 speed_z = rb.velocity.z; //z軸方向速度の取得
@@ -81,7 +79,7 @@ public class Bullet : MonoBehaviour
         if (collision.gameObject.tag == "Bullet") //弾同士で衝突した場合
         {
             Debug.Log("Bullet!");
-            //衝突音？
+            //SoundEffect(1); //外部スクリプトによる命令に変更(消滅すると鳴らせない)
             Destroy(this.gameObject);
             //発射タンク情報へのアクセス
         }
@@ -90,11 +88,6 @@ public class Bullet : MonoBehaviour
             Destroy(this.gameObject); //消滅
             //発射タンク情報へのアクセス
         }
-    }
-    void SoundEffect(int num)
-    {
-        audioSource[num].PlayOneShot(audioSource[num].clip);
-        Debug.Log ("SoundEffect Played.");
     }
 }
 //Destroyは専用関数用意？
