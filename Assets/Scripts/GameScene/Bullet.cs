@@ -5,6 +5,8 @@ public class Bullet : MonoBehaviour
 {
     private int ricochet = 10; //跳弾可能回数 要初期化
     private Rigidbody rb; //物理演算情報RigidBody
+    public GameObject prefab; //跳弾エフェクトprefab情報を格納
+    GameObject cloneObject; //跳弾エフェクトprefab情報をクローンして格納
 
     void Start()
     {
@@ -19,7 +21,7 @@ public class Bullet : MonoBehaviour
         rend[0] = GameObject.Find("BPS").GetComponent<Renderer>(); //Particle System情報の取得 通常弾エフェクト
         rend[1] = GameObject.Find("BPS2").GetComponent<Renderer>(); //高速弾エフェクト
         rend[2] = GameObject.Find("BPS3").GetComponent<Renderer>(); //反射弾エフェクト
-        rend[3] = GameObject.Find("RPS").GetComponent<Renderer>(); //反射時エフェクト
+        //rend[3] = GameObject.Find("RPS").GetComponent<Renderer>(); //反射時エフェクト(Prefabに移行)
         //rend[4] = GameObject.Find("Burst").GetComponent<Renderer>(); //未定
 
         this.transform.rotation = Quaternion.Euler(0, -init_radian + 90f, 0); //回転処理（進行方向）
@@ -49,6 +51,7 @@ public class Bullet : MonoBehaviour
         float speed_z; //z軸方向移動速度
         float radian; //反射後の角度を計算
 
+
         if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "WeakWall") //壁と衝突した場合
         {
             if (ricochet == 0) //跳弾可能回数が0のとき
@@ -67,6 +70,7 @@ public class Bullet : MonoBehaviour
                 radian = (float)Math.Atan2(speed_z, speed_x); //x-z平面のtanの値計算
                 radian = radian * (float)(180 / Math.PI); //角度に変換
                 this.transform.rotation = Quaternion.Euler(0, -radian + 90f, 0); //回転処理（進行方向）
+                cloneObject = Instantiate(prefab, this.transform.position, Quaternion.identity); //跳弾エフェクトのprefabを作成
             }
         }
         if (collision.gameObject.tag == "Tank") //タンクと衝突した場合
@@ -79,8 +83,9 @@ public class Bullet : MonoBehaviour
         if (collision.gameObject.tag == "Bullet") //弾同士で衝突した場合
         {
             Debug.Log("Bullet!");
+            cloneObject = Instantiate(prefab, this.transform.position, Quaternion.identity);
             //SoundEffect(1); //外部スクリプトによる命令に変更(消滅すると鳴らせない)
-            Destroy(this.gameObject);
+            Destroy(this.gameObject); //消滅
             //発射タンク情報へのアクセス
         }
         if (collision.gameObject.tag == "Mine" || collision.gameObject.tag == "Blast") //タンク・他の弾・地雷・爆風との接触
