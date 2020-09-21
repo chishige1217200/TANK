@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private int ricochet = 10; //跳弾可能回数 要初期化
+    private int ricochet = 0; //跳弾可能回数 要初期化
     private Rigidbody rb; //物理演算情報RigidBody
     private AudioSource[] audioSource; //効果音情報の取得 0:Fire 1:Hit
 
@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
     {
         float force_x; //x方向の力
         float force_z; //z方向の力
-        float forceIndex = 30f; //射出力基準値 要初期化
+        float forceIndex = 30f; //射出力基準値 要初期化 低速15f 高速30f
         float init_radian = 30f; //初期進行角度 要初期化
         Renderer[] rend; //エフェクトレンダラー情報
 
@@ -30,18 +30,18 @@ public class Bullet : MonoBehaviour
         force_z = forceIndex * (float)Math.Sin(init_radian); //z軸方向の力を計算
         rb.AddForce(force_x, 0, force_z, ForceMode.VelocityChange); //瞬間的に弾に力を加える(質量無視)
 
-        if (forceIndex < 20f) //速度が20以下の通常弾エフェクト
-        {
-            rend[0].enabled = true;
-        }
-        else //速度が20以上の高速弾エフェクト
+        if (forceIndex > 20f) //速度が20以上の弾エフェクト
         {
             rend[1].enabled = true;
         }
 
-        if (ricochet > 2) //跳弾数が2以上の反射弾
+        if (ricochet > 2) //跳弾数が2以上の弾
         {
             rend[2].enabled = true;
+        }
+        else //跳弾数が1以下の弾
+        {
+            rend[0].enabled = true;
         }
     }
 
