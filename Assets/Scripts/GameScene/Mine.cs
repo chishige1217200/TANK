@@ -6,7 +6,7 @@ public class Mine : MonoBehaviour {
     private Renderer rend;
     void Start () {
         //rend = GameObject.Find ("Big Explosion").GetComponent<Renderer> ();
-        Gobomb ();
+        Gobomb (); //GoBomb関数実行
     }
 
     void Update () {
@@ -14,18 +14,18 @@ public class Mine : MonoBehaviour {
     }
 
     async void Gobomb () {
-        Prediction ();
-        await Task.Delay (5000);
-        Explosion ();
+        Prediction (); //爆発カウントダウン実行
+        await Task.Delay (5000); //5秒待機
+        Explosion (); //爆発関数実行
     }
 
     void Prediction () {
-        Debug.Log ("Predict!");
+        Debug.Log ("Predict!"); //ログ出力
 
     }
 
     void Explosion () {
-        Debug.Log ("Bomb!");
+        Debug.Log ("Bomb!"); //ログ出力
     }
 
 }
