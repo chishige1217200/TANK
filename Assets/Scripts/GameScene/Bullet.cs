@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
 
     void Start()
     {
-        Shot(15f, 30f, 10); //Temporary
+        Shot(30f, 30f, 10); //Temporary
     }
 
     void OnCollisionEnter(Collision collision) //物体の衝突を見る関数(非貫通)
