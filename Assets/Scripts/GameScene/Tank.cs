@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class Tank : MonoBehaviour
 {
-    private Transform bodyTransform; //BodyオブジェクトのTransformコンポーネント情報
-    private Transform batteryTransform; //BatteryオブジェクトのTransformコンポーネント情報
+    private Transform bodyTransform; //bodyオブジェクトのTransformコンポーネント情報
+    private Transform tarrotTransform; //tarrotオブジェクトのTransformコンポーネント情報
 
     void Start()
     {
         bodyTransform = GameObject.Find("Body").GetComponent<Transform>(); //BodyオブジェクトのTransformコンポーネント情報を取得
-        batteryTransform = GameObject.Find("Battery").GetComponent<Transform>(); //BatteryオブジェクトのTransformコンポーネント情報を取得
+        tarrotTransform = GameObject.Find("Tarrot").GetComponent<Transform>(); //BatteryオブジェクトのTransformコンポーネント情報を取得
     }
 
     void Update()
