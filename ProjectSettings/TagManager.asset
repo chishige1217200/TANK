@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Shootable
   - Wall
+  - Tank
+  - WeakWall
+  - Bullet
+  - Hole
   layers:
   - Default
   - TransparentFX
