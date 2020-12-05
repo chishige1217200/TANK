@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Shootable
+  - Wall
+  - Tank
+  - WeakWall
+  - Bullet
+  - Hole
   layers:
   - Default
   - TransparentFX
